@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import CustomCursor from "@/components/CustomCursor";
 import ParticleAnimation from "@/components/ParticleAnimation";
 import Navbar from "@/components/Navbar";
+import MobileNavbar from "@/components/MobileNavbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -31,7 +32,7 @@ const Index = () => {
 
   return (
     <ThemeProvider defaultTheme="dark">
-      <div className="relative overflow-x-hidden">
+      <div id="root" className="relative overflow-x-hidden">
         <CustomCursor />
         <ParticleAnimation />
         <Navbar />
@@ -46,6 +47,7 @@ const Index = () => {
         </main>
         
         <Footer />
+        <MobileNavbar />
         <BookingModal open={isBookingOpen} onOpenChange={setIsBookingOpen} />
         <Toaster />
       </div>

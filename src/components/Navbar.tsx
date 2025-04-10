@@ -31,32 +31,9 @@ const Navbar = () => {
     }
   };
 
+  // Mobile navbar is now in a separate component
   if (isMobile) {
-    return (
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 opacity-0 animate-fade-in">
-        <div className="glass rounded-full px-4 py-2 flex items-center space-x-6">
-          <button
-            onClick={() => scrollToSection("services")}
-            className="text-foreground p-2"
-          >
-            Services
-          </button>
-          <button
-            onClick={() => scrollToSection("benefits")}
-            className="text-foreground p-2"
-          >
-            Benefits
-          </button>
-          <ThemeToggle />
-          <Button
-            onClick={() => scrollToSection("contact")}
-            className="bg-primary hover:bg-primary/90 text-white rounded-full"
-          >
-            Contact
-          </Button>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (

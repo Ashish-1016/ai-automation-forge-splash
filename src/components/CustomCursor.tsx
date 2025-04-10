@@ -1,86 +1,40 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useTheme } from "@/hooks/useTheme";
 
 export default function CustomCursor() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [hidden, setHidden] = useState(true);
-  const [clicked, setClicked] = useState(false);
-  const [linkHovered, setLinkHovered] = useState(false);
+  const { theme } = useTheme();
+  const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Check if we're on a touch device
-    const isTouchDevice = () => {
-      return (
-        "ontouchstart" in window ||
-        navigator.maxTouchPoints > 0 ||
-        navigator.msMaxTouchPoints > 0
-      );
-    };
+    const cursor = cursorRef.current;
+    if (!cursor) return;
 
-    if (isTouchDevice()) return;
-
-    const addEventListeners = () => {
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseenter", onMouseEnter);
-      document.addEventListener("mouseleave", onMouseLeave);
-      document.addEventListener("mousedown", onMouseDown);
-      document.addEventListener("mouseup", onMouseUp);
-    };
-
-    const removeEventListeners = () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseenter", onMouseEnter);
-      document.removeEventListener("mouseleave", onMouseLeave);
-      document.removeEventListener("mousedown", onMouseDown);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
+    // Only show custom cursor on devices without touch
+    if (window.matchMedia("(pointer: fine)").matches) {
+      cursor.style.display = "block";
+    } else {
+      cursor.style.display = "none";
+      return;
+    }
 
     const onMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-
-      // Check if the cursor is over a clickable element
-      const target = e.target as HTMLElement;
-      setLinkHovered(
-        target.tagName.toLowerCase() === "button" ||
-          target.tagName.toLowerCase() === "a" ||
-          target.closest("button") !== null ||
-          target.closest("a") !== null
-      );
+      const { clientX, clientY } = e;
+      cursor.style.transform = `translate3d(${clientX}px, ${clientY}px, 0)`;
     };
 
-    const onMouseDown = () => {
-      setClicked(true);
+    document.addEventListener("mousemove", onMouseMove);
+
+    return () => {
+      document.removeEventListener("mousemove", onMouseMove);
     };
-
-    const onMouseUp = () => {
-      setClicked(false);
-    };
-
-    const onMouseLeave = () => {
-      setHidden(true);
-    };
-
-    const onMouseEnter = () => {
-      setHidden(false);
-    };
-
-    addEventListeners();
-    return () => removeEventListeners();
-  }, []);
-
-  // Don't render custom cursor on touch devices
-  if (typeof window !== "undefined" && "ontouchstart" in window) {
-    return null;
-  }
+  }, [theme]);
 
   return (
     <div
-      className={`custom-cursor ${hidden ? "opacity-0" : "opacity-70"} ${
-        clicked ? "scale-75" : "scale-100"
-      } ${linkHovered ? "scale-150" : "scale-100"}`}
-      style={{
-        transform: `translate3d(${position.x - 12}px, ${position.y - 12}px, 0)`,
-      }}
+      ref={cursorRef}
+      className="custom-cursor hidden"
+      style={{ display: "none" }}
     />
   );
 }

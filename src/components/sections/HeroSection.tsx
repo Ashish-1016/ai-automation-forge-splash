@@ -11,6 +11,10 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onBookCall }: HeroSectionProps) {
   const { companyName } = useCompanyName();
+  const [count1, setCount1] = useState(0);
+  const [count2, setCount2] = useState(0);
+  const [count3, setCount3] = useState(0);
+  const [count4, setCount4] = useState(0);
 
   const scrollToContact = () => {
     const contactSection = document.getElementById("contact");
@@ -26,13 +30,51 @@ export default function HeroSection({ onBookCall }: HeroSectionProps) {
     }
   };
 
+  // Animate the counting effect
+  useEffect(() => {
+    const targetValues = [93, 50, 24, 100];
+    const duration = 2000; // 2 seconds
+    const intervals = 50; // Update every 50ms
+    const steps = duration / intervals;
+    
+    const timer1 = setInterval(() => {
+      setCount1(prev => {
+        const next = prev + Math.ceil(targetValues[0] / steps);
+        return next >= targetValues[0] ? targetValues[0] : next;
+      });
+    }, intervals);
+    
+    const timer2 = setInterval(() => {
+      setCount2(prev => {
+        const next = prev + Math.ceil(targetValues[1] / steps);
+        return next >= targetValues[1] ? targetValues[1] : next;
+      });
+    }, intervals);
+    
+    const timer3 = setInterval(() => {
+      setCount3(prev => {
+        const next = prev + Math.ceil(targetValues[2] / steps);
+        return next >= targetValues[2] ? targetValues[2] : next;
+      });
+    }, intervals);
+    
+    const timer4 = setInterval(() => {
+      setCount4(prev => {
+        const next = prev + Math.ceil(targetValues[3] / steps);
+        return next >= targetValues[3] ? targetValues[3] : next;
+      });
+    }, intervals);
+    
+    return () => {
+      clearInterval(timer1);
+      clearInterval(timer2);
+      clearInterval(timer3);
+      clearInterval(timer4);
+    };
+  }, []);
+
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="absolute top-0 -z-10 h-full w-full">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(var(--primary),0.15),transparent_50%)] animated-gradient"></div>
-      </div>
-
       <div className="container max-w-5xl mx-auto text-center z-10">
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
@@ -42,10 +84,10 @@ export default function HeroSection({ onBookCall }: HeroSectionProps) {
         >
           Transform Your Business with{" "}
           <motion.span 
-            initial={{ backgroundPosition: "0% 50%" }}
-            animate={{ backgroundPosition: "100% 50%" }}
-            transition={{ duration: 5, repeat: Infinity, repeatType: "reverse" }}
-            className="text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, delay: 0.5 }}
+            className="text-primary"
           >
             AI Automation
           </motion.span>
@@ -92,19 +134,19 @@ export default function HeroSection({ onBookCall }: HeroSectionProps) {
           className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto"
         >
           <div className="flex flex-col items-center">
-            <div className="text-3xl font-bold text-primary mb-2">93%</div>
+            <div className="text-3xl font-bold text-primary mb-2">{count1}%</div>
             <p className="text-sm text-muted-foreground">Task Automation</p>
           </div>
           <div className="flex flex-col items-center">
-            <div className="text-3xl font-bold text-primary mb-2">50%+</div>
+            <div className="text-3xl font-bold text-primary mb-2">{count2}%+</div>
             <p className="text-sm text-muted-foreground">Cost Reduction</p>
           </div>
           <div className="flex flex-col items-center">
-            <div className="text-3xl font-bold text-primary mb-2">24/7</div>
+            <div className="text-3xl font-bold text-primary mb-2">{count3}/7</div>
             <p className="text-sm text-muted-foreground">Service Operation</p>
           </div>
           <div className="flex flex-col items-center">
-            <div className="text-3xl font-bold text-primary mb-2">100+</div>
+            <div className="text-3xl font-bold text-primary mb-2">{count4}+</div>
             <p className="text-sm text-muted-foreground">Happy Clients</p>
           </div>
         </motion.div>
