@@ -1,7 +1,16 @@
 
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from "@/components/ui/carousel";
+import { useCompanyName } from "@/hooks/useCompanyName";
 
 const testimonials = [
   {
@@ -31,9 +40,56 @@ const testimonials = [
     company: "FinancePro",
     initials: "AR",
   },
+  {
+    id: 4,
+    content:
+      "Their AI-powered document processing system eliminated countless hours of manual data entry. We've seen a 70% reduction in processing times and virtually eliminated errors.",
+    author: "David Williams",
+    role: "CTO",
+    company: "DocuSign Pro",
+    initials: "DW",
+  },
+  {
+    id: 5,
+    content:
+      "The customer service chatbot they implemented handles 85% of our routine inquiries, allowing our team to focus on strategic initiatives. Customer satisfaction improved by 40%.",
+    author: "Jennifer Lee",
+    role: "Customer Experience Director",
+    company: "RetailOne",
+    initials: "JL",
+  },
 ];
 
 export default function TestimonialsSection() {
+  const { companyName } = useCompanyName();
+  const [isPaused, setIsPaused] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  
+  // Auto-scroll functionality
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (!isPaused) {
+      interval = setInterval(() => {
+        setActiveIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+      }, 5000);
+    }
+    
+    return () => clearInterval(interval);
+  }, [isPaused]);
+  
+  // Effect to update the carousel position when activeIndex changes
+  useEffect(() => {
+    if (carouselRef.current) {
+      const scrollLeft = activeIndex * (carouselRef.current.clientWidth / 3);
+      carouselRef.current.scrollTo({
+        left: scrollLeft,
+        behavior: 'smooth',
+      });
+    }
+  }, [activeIndex]);
+
   return (
     <section id="testimonials" className="py-20 px-4">
       <div className="container mx-auto max-w-6xl">
@@ -46,38 +102,68 @@ export default function TestimonialsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial) => (
-            <Card
-              key={testimonial.id}
-              className="bg-card hover:shadow-lg transition-all duration-300 h-full"
-            >
-              <CardContent className="pt-6">
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-5 w-5 fill-primary text-primary"
-                    />
-                  ))}
-                </div>
-                <p className="mb-6 text-foreground">"{testimonial.content}"</p>
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10 mr-3">
-                    <AvatarFallback className="bg-primary/10 text-primary">
-                      {testimonial.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">{testimonial.author}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {testimonial.role}, {testimonial.company}
-                    </p>
+        <div 
+          className="relative"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <Carousel 
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent ref={carouselRef}>
+              {testimonials.map((testimonial) => (
+                <CarouselItem key={testimonial.id} className="md:basis-1/3 lg:basis-1/3">
+                  <div className="p-1">
+                    <Card className="bg-card hover:shadow-lg transition-all duration-300 h-full">
+                      <CardContent className="pt-6">
+                        <div className="flex mb-4">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className="h-5 w-5 fill-primary text-primary"
+                            />
+                          ))}
+                        </div>
+                        <p className="mb-6 text-foreground">"{testimonial.content}"</p>
+                        <div className="flex items-center">
+                          <Avatar className="h-10 w-10 mr-3">
+                            <AvatarFallback className="bg-primary/10 text-primary">
+                              {testimonial.initials}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-semibold">{testimonial.author}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {testimonial.role}, {testimonial.company}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden sm:flex -left-4" />
+            <CarouselNext className="hidden sm:flex -right-4" />
+          </Carousel>
+          
+          {/* Navigation dots */}
+          <div className="flex justify-center mt-6 space-x-2">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                className={`h-2 rounded-full transition-all ${
+                  activeIndex === index ? "w-6 bg-primary" : "w-2 bg-primary/30"
+                }`}
+                onClick={() => setActiveIndex(index)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

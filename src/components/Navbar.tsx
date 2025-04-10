@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ChevronDown } from "lucide-react";
+import { useCompanyName } from "@/hooks/useCompanyName";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const isMobile = useIsMobile();
+  const { companyName } = useCompanyName();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,7 +67,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <h1 className="text-xl font-bold">AutomateAI</h1>
+          <h1 className="text-xl font-bold">{companyName}</h1>
         </div>
         <nav className="hidden md:flex items-center space-x-8">
           <button

@@ -4,32 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import { Mail, MapPin, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useCompanyName } from "@/hooks/useCompanyName";
 
 const contactDetails = [
   {
     icon: Mail,
     title: "Email",
-    details: "contact@automateai.com",
-    action: "mailto:contact@automateai.com",
-  },
-  {
-    icon: Phone,
-    title: "Phone",
-    details: "+1 (555) 123-4567",
-    action: "tel:+15551234567",
+    details: "hello@myailabs.in",
+    action: "mailto:hello@myailabs.in",
   },
   {
     icon: MapPin,
     title: "Address",
-    details: "123 Tech Avenue, San Francisco, CA",
+    details: "Pune, India",
     action: "https://maps.google.com",
   },
 ];
 
 export default function ContactSection() {
   const { toast } = useToast();
+  const { companyName } = useCompanyName();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -108,16 +104,8 @@ export default function ContactSection() {
               <h3 className="text-2xl font-bold mb-6">Our Hours</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Monday - Friday:</span>
-                  <span>9:00 AM - 6:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Saturday:</span>
-                  <span>10:00 AM - 4:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Sunday:</span>
-                  <span>Closed</span>
+                  <span className="text-muted-foreground">Availability:</span>
+                  <span>24x7</span>
                 </div>
               </div>
             </div>
