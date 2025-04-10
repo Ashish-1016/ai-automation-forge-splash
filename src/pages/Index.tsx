@@ -1,13 +1,50 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState, useEffect } from "react";
+import { ThemeProvider } from "@/hooks/useTheme";
+import CustomCursor from "@/components/CustomCursor";
+import ParticleAnimation from "@/components/ParticleAnimation";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+// Sections
+import HeroSection from "@/components/sections/HeroSection";
+import ServicesSection from "@/components/sections/ServicesSection";
+import BenefitsSection from "@/components/sections/BenefitsSection";
+import TestimonialsSection from "@/components/sections/TestimonialsSection";
+import AboutSection from "@/components/sections/AboutSection";
+import ContactSection from "@/components/sections/ContactSection";
 
 const Index = () => {
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure hydration completes to avoid mismatches between SSR and client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <ThemeProvider defaultTheme="dark">
+      <div className="relative overflow-x-hidden">
+        <CustomCursor />
+        <ParticleAnimation />
+        <Navbar />
+        
+        <main>
+          <HeroSection />
+          <ServicesSection />
+          <BenefitsSection />
+          <TestimonialsSection />
+          <AboutSection />
+          <ContactSection />
+        </main>
+        
+        <Footer />
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 

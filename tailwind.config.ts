@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -84,11 +85,38 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+        'float': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'pulse-gentle': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
+        },
+        'fade-in': {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'move-slow': {
+          '0%': { transform: 'translateX(0) translateY(0)' },
+          '25%': { transform: 'translateX(10px) translateY(10px)' },
+          '50%': { transform: 'translateX(0) translateY(20px)' },
+          '75%': { transform: 'translateX(-10px) translateY(10px)' },
+          '100%': { transform: 'translateX(0) translateY(0)' },
+        },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-gentle': 'pulse-gentle 3s ease-in-out infinite',
+        'fade-in': 'fade-in 0.7s ease-out forwards',
+        'fade-in-delay-200': 'fade-in 0.7s ease-out 0.2s forwards',
+        'fade-in-delay-400': 'fade-in 0.7s ease-out 0.4s forwards',
+        'fade-in-delay-600': 'fade-in 0.7s ease-out 0.6s forwards',
+        'fade-in-delay-800': 'fade-in 0.7s ease-out 0.8s forwards',
+        'move-slow': 'move-slow 10s ease-in-out infinite',
 			}
 		}
 	},
