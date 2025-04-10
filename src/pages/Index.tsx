@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import MobileNavbar from "@/components/MobileNavbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import { useCompanyName } from "@/hooks/useCompanyName";
 
 // Sections
 import HeroSection from "@/components/sections/HeroSection";
@@ -20,6 +21,14 @@ import BookingModal from "@/components/BookingModal";
 const Index = () => {
   const [mounted, setMounted] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const { companyName } = useCompanyName();
+
+  // Update document title with company name
+  useEffect(() => {
+    if (companyName) {
+      document.title = `${companyName} | AI Automation Solutions`;
+    }
+  }, [companyName]);
 
   // Ensure hydration completes to avoid mismatches between SSR and client
   useEffect(() => {

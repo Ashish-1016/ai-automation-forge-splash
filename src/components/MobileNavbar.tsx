@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Home, Settings, HeartHandshake, Users, MessageSquare, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -50,7 +51,12 @@ const NavItem = ({ icon, label, onClick }: NavItemProps) => {
 
 export default function MobileNavbar() {
   const { theme, setTheme } = useTheme();
-  const [expanded, setExpanded] = useState(false);
+  const isMobile = useIsMobile();
+  
+  // Don't render on larger screens
+  if (!isMobile) {
+    return null;
+  }
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -68,10 +74,10 @@ export default function MobileNavbar() {
       initial={{ opacity: 0, scale: 0.8, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 1, duration: 0.5 }}
-      className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50"
+      className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-auto mx-auto"
     >
       <motion.div 
-        className="bg-black/75 backdrop-blur-md text-white rounded-full flex items-center justify-between px-2 shadow-lg border border-white/10"
+        className="bg-black/75 backdrop-blur-md text-white rounded-full flex items-center justify-between px-2 shadow-lg border border-white/10 max-w-fit mx-auto"
       >
         <NavItem 
           icon={<Home size={20} />}

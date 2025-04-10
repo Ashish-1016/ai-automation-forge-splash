@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { Clock } from "lucide-react";
+import { Clock, X } from "lucide-react";
 
 interface BookingModalProps {
   open: boolean;
@@ -84,104 +84,109 @@ export default function BookingModal({ open, onOpenChange }: BookingModalProps) 
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">Book Your Free Audit Call</DialogTitle>
-          <DialogDescription>
-            Schedule a 30-minute call with our AI automation experts to discover how we can help your business.
-          </DialogDescription>
-        </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Your Name</Label>
-              <Input 
-                id="name" 
-                name="name" 
-                placeholder="Enter your name" 
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input 
-                id="email" 
-                name="email" 
-                type="email" 
-                placeholder="your@email.com" 
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          </div>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="max-h-[90vh] overflow-auto">
+        <div className="mx-auto w-full max-w-md">
+          <DrawerHeader className="text-center">
+            <div className="mx-auto h-1.5 w-12 rounded-full bg-border mb-4" />
+            <DrawerTitle className="text-2xl">Book Your Free Audit Call</DrawerTitle>
+            <DrawerDescription>
+              Schedule a 30-minute call with our AI automation experts to discover how we can help your business.
+            </DrawerDescription>
+          </DrawerHeader>
           
-          <div className="space-y-2">
-            <Label htmlFor="companySize">Company Size</Label>
-            <Select 
-              value={formData.companySize} 
-              onValueChange={(value) => setFormData(prev => ({ ...prev, companySize: value }))}
-            >
-              <SelectTrigger id="companySize">
-                <SelectValue placeholder="Select company size" />
-              </SelectTrigger>
-              <SelectContent>
-                {companySizes.map((size) => (
-                  <SelectItem key={size} value={size}>
-                    {size}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="space-y-2">
-            <Label>Select Date</Label>
-            <div className="border rounded-md p-3">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                className="mx-auto pointer-events-auto"
-                disabled={(date) => date < new Date() || date.getDay() === 0 || date.getDay() === 6}
-              />
-            </div>
-          </div>
-          
-          {date && (
-            <div className="space-y-2">
-              <Label>Select Time</Label>
-              <div className="grid grid-cols-3 gap-2">
-                {timeSlots.map((time) => (
-                  <Button
-                    key={time}
-                    type="button"
-                    variant={timeSlot === time ? "default" : "outline"}
-                    className="gap-1"
-                    onClick={() => setTimeSlot(time)}
-                  >
-                    <Clock className="h-3 w-3" />
-                    {time}
-                  </Button>
-                ))}
+          <div className="p-6 pt-0">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Your Name</Label>
+                  <Input 
+                    id="name" 
+                    name="name" 
+                    placeholder="Enter your name" 
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    placeholder="your@email.com" 
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
               </div>
-            </div>
-          )}
-          
-          <Button 
-            type="submit" 
-            className="w-full py-6 bg-primary hover:bg-primary/90"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Scheduling..." : "Schedule Call"}
-          </Button>
-        </form>
-      </DialogContent>
-    </Dialog>
+              
+              <div className="space-y-2">
+                <Label htmlFor="companySize">Company Size</Label>
+                <Select 
+                  value={formData.companySize} 
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, companySize: value }))}
+                >
+                  <SelectTrigger id="companySize">
+                    <SelectValue placeholder="Select company size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {companySizes.map((size) => (
+                      <SelectItem key={size} value={size}>
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Select Date</Label>
+                <div className="border rounded-md p-3 flex justify-center">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    className="mx-auto pointer-events-auto"
+                    disabled={(date) => date < new Date() || date.getDay() === 0 || date.getDay() === 6}
+                  />
+                </div>
+              </div>
+              
+              {date && (
+                <div className="space-y-2">
+                  <Label>Select Time</Label>
+                  <div className="grid grid-cols-3 gap-2 max-h-[200px] overflow-y-auto pr-1">
+                    {timeSlots.map((time) => (
+                      <Button
+                        key={time}
+                        type="button"
+                        variant={timeSlot === time ? "default" : "outline"}
+                        className="gap-1"
+                        onClick={() => setTimeSlot(time)}
+                      >
+                        <Clock className="h-3 w-3" />
+                        {time}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <Button 
+                type="submit" 
+                className="w-full py-6 bg-primary hover:bg-primary/90"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Scheduling..." : "Schedule Call"}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 }

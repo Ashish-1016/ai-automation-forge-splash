@@ -11,6 +11,7 @@ import {
   CarouselPrevious
 } from "@/components/ui/carousel";
 import { useCompanyName } from "@/hooks/useCompanyName";
+import { motion } from "framer-motion";
 
 const testimonials = [
   {
@@ -64,50 +65,123 @@ export default function TestimonialsSection() {
   const { companyName } = useCompanyName();
   const [isPaused, setIsPaused] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [api, setApi] = useState<any>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  
+  // Set up intersection observer for section entrance animation
+  const sectionRef = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
   
   // Auto-scroll functionality
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
-    if (!isPaused) {
+    if (!isPaused && api) {
       interval = setInterval(() => {
-        setActiveIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+        api.scrollNext();
       }, 5000);
     }
     
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, api]);
   
-  // Effect to update the carousel position when activeIndex changes
+  // Handle carousel selection change
   useEffect(() => {
-    if (carouselRef.current) {
-      const scrollLeft = activeIndex * (carouselRef.current.clientWidth / 3);
-      carouselRef.current.scrollTo({
-        left: scrollLeft,
-        behavior: 'smooth',
-      });
+    if (!api) {
+      return;
     }
-  }, [activeIndex]);
+
+    const onSelect = () => {
+      setActiveIndex(api.selectedScrollSnap());
+    };
+
+    api.on("select", onSelect);
+    api.on("reInit", onSelect);
+
+    return () => {
+      api?.off("select", onSelect);
+    };
+  }, [api]);
+  
+  // Handle manual dot navigation
+  const scrollToIndex = (index: number) => {
+    if (api) {
+      api.scrollTo(index);
+    }
+  };
+
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.4 }
+    }
+  };
 
   return (
-    <section id="testimonials" className="py-20 px-4">
+    <motion.section 
+      ref={sectionRef}
+      id="testimonials" 
+      className="py-20 px-4"
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={sectionVariants}
+    >
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-16">
+        <motion.div 
+          className="text-center mb-16"
+          variants={itemVariants}
+        >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             What Our Clients Say
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Discover how our AI automation solutions have transformed businesses like yours.
           </p>
-        </div>
+        </motion.div>
 
-        <div 
+        <motion.div 
           className="relative"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
+          variants={itemVariants}
         >
           <Carousel 
+            setApi={setApi}
             opts={{
               align: "start",
               loop: true,
@@ -160,12 +234,13 @@ export default function TestimonialsSection() {
                 className={`h-2 rounded-full transition-all ${
                   activeIndex === index ? "w-6 bg-primary" : "w-2 bg-primary/30"
                 }`}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => scrollToIndex(index)}
+                aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
