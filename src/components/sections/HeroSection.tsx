@@ -1,16 +1,20 @@
-
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Calendar } from "lucide-react";
-import { useCompanyName } from "@/hooks/useCompanyName";
 import { motion } from "framer-motion";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect.tsx";
+import { SparklesCore } from "@/components/ui/sparkles.tsx";
+import { useTheme } from "@/hooks/useTheme.tsx";
+import { ThemeToggle } from "@/components/ThemeToggle.tsx";
 
 interface HeroSectionProps {
   onBookCall: () => void;
 }
 
 export default function HeroSection({ onBookCall }: HeroSectionProps) {
-  const { companyName } = useCompanyName();
+
+
+  const { theme } = useTheme();
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
   const [count3, setCount3] = useState(0);
@@ -32,7 +36,7 @@ export default function HeroSection({ onBookCall }: HeroSectionProps) {
 
   // Animate the counting effect
   useEffect(() => {
-    const targetValues = [93, 50, 24, 100];
+    const targetValues = [93, 50, 24, 30];
     const duration = 2000; // 2 seconds
     const intervals = 50; // Update every 50ms
     const steps = duration / intervals;
@@ -73,8 +77,47 @@ export default function HeroSection({ onBookCall }: HeroSectionProps) {
     };
   }, []);
 
+
+  const words = [
+    {
+      text: "Transform",
+      className:"text-4xl md:text-6xl lg:text-7xl font-bold"
+    },
+    {
+      text: "your",
+      className:"text-4xl md:text-6xl lg:text-7xl font-bold"
+    },
+    {
+      text: "business",
+      className:"text-4xl md:text-6xl lg:text-7xl font-bold"
+    },
+    {
+      text: "with",
+      className:"text-4xl md:text-6xl lg:text-7xl font-bold"
+    },
+    {
+      text: "Automation",
+      className: "text-primary text-4xl md:text-6xl lg:text-7xl font-bold",
+    },
+  ];
+
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
+    <section id="home" className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
+
+        <div className="w-full absolute inset-0 h-screen">
+            <SparklesCore
+              key={theme}
+              id="tsparticlesfullpage"
+              background="transparent"
+              minSize={0.6}
+              maxSize={1.4}
+              particleDensity={100}
+              className="w-full h-full"
+              particleColor={theme === 'light' ? "#000000" : '#ffffff'}
+            />
+        </div>
+
+
       <div className="container max-w-5xl mx-auto text-center z-10">
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
@@ -82,15 +125,7 @@ export default function HeroSection({ onBookCall }: HeroSectionProps) {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6"
         >
-          Transform Your Business with{" "}
-          <motion.span 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, delay: 0.5 }}
-            className="text-primary"
-          >
-            AI Automation
-          </motion.span>
+          <TextGenerateEffect words={words} />
         </motion.h1>
         
         <motion.p 
@@ -109,22 +144,25 @@ export default function HeroSection({ onBookCall }: HeroSectionProps) {
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }}
           className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
         >
+
           <Button
             size="lg"
             className="bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-full"
-            onClick={scrollToContact}
-          >
-            Contact Us
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="px-8 py-6 text-lg rounded-full"
             onClick={onBookCall}
           >
             <Calendar className="mr-2 h-5 w-5" />
             Book a Free Audit Call
           </Button>
+
+          <Button
+            variant="outline"
+            size="lg"
+            className="px-8 py-6 text-lg rounded-full"
+            onClick={scrollToContact}
+          >
+            Contact Us
+          </Button>
+
         </motion.div>
 
         <motion.div 
@@ -156,15 +194,16 @@ export default function HeroSection({ onBookCall }: HeroSectionProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut", delay: 1.2 }}
-        className="absolute bottom-8 w-full flex justify-center"
+        className="absolute bottom-8 w-full flex max-md:justify-end max-md:mr-10 justify-center"
       >
         <button
           onClick={scrollToServices}
-          className="rounded-full p-2 border border-primary/30 animate-float"
+          className="rounded-full p-2 bg-primary hover:opacity-70 text-white animate-float"
         >
-          <ArrowDown className="h-6 w-6 text-primary" />
+          <ArrowDown className="h-6 w-6" />
         </button>
       </motion.div>
+
     </section>
   );
 }

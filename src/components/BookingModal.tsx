@@ -1,14 +1,13 @@
-
 import { useState } from "react";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { useToast } from "@/hooks/use-toast";
-import { Clock, X } from "lucide-react";
+import { Clock, LoaderCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface BookingModalProps {
   open: boolean;
@@ -32,7 +31,6 @@ const companySizes = [
 ];
 
 export default function BookingModal({ open, onOpenChange }: BookingModalProps) {
-  const { toast } = useToast();
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [timeSlot, setTimeSlot] = useState<string>("");
   const [formData, setFormData] = useState({
@@ -51,11 +49,9 @@ export default function BookingModal({ open, onOpenChange }: BookingModalProps) 
     e.preventDefault();
     
     if (!date || !timeSlot || !formData.name || !formData.email || !formData.companySize) {
-      toast({
-        title: "Missing information",
-        description: "Please fill in all fields to book your call.",
-        variant: "destructive"
-      });
+
+
+      toast.error("Missing information Please fill in all fields to book your call.");
       return;
     }
     
@@ -64,10 +60,7 @@ export default function BookingModal({ open, onOpenChange }: BookingModalProps) 
     // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);
-      toast({
-        title: "Call scheduled!",
-        description: `Your audit call is scheduled for ${format(date, "PPP")} at ${timeSlot}.`,
-      });
+      toast.success(`Call scheduled! Your audit call is scheduled for ${format(date, "PPP")} at ${timeSlot}.`);
       
       // Reset form
       setDate(undefined);
@@ -85,19 +78,21 @@ export default function BookingModal({ open, onOpenChange }: BookingModalProps) 
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[90vh] overflow-auto">
-        <div className="mx-auto w-full max-w-md">
+      <DrawerContent className='max-h-[90dvh]'>
+        <div className="md:w-full mx-auto md:max-w-2xl h-full overflow-auto pr-1">
           <DrawerHeader className="text-center">
-            <div className="mx-auto h-1.5 w-12 rounded-full bg-border mb-4" />
             <DrawerTitle className="text-2xl">Book Your Free Audit Call</DrawerTitle>
             <DrawerDescription>
               Schedule a 30-minute call with our AI automation experts to discover how we can help your business.
             </DrawerDescription>
           </DrawerHeader>
+
           
           <div className="p-6 pt-0">
             <form onSubmit={handleSubmit} className="space-y-6">
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
                 <div className="space-y-2">
                   <Label htmlFor="name">Your Name</Label>
                   <Input 
@@ -151,7 +146,7 @@ export default function BookingModal({ open, onOpenChange }: BookingModalProps) 
                     selected={date}
                     onSelect={setDate}
                     className="mx-auto pointer-events-auto"
-                    disabled={(date) => date < new Date() || date.getDay() === 0 || date.getDay() === 6}
+                    disabled={(date) => date < new Date()}
                   />
                 </div>
               </div>
@@ -177,11 +172,12 @@ export default function BookingModal({ open, onOpenChange }: BookingModalProps) 
               )}
               
               <Button 
-                type="submit" 
-                className="w-full py-6 bg-primary hover:bg-primary/90"
+                type="submit"
+                className="w-full sticky bottom-2 py-6 bg-primary hover:bg-primary/90"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Scheduling..." : "Schedule Call"}
+                {isSubmitting ? <span className='flex justify-between items-center gap-3'><LoaderCircle className='animate-spin' /> <text>Scheduling...</text> </span> : "Schedule" +
+                  " Call"}
               </Button>
             </form>
           </div>

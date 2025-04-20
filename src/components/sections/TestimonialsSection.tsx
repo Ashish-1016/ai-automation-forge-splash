@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
-import { 
+import {
   Carousel,
   CarouselContent,
   CarouselItem,
@@ -17,7 +17,7 @@ const testimonials = [
   {
     id: 1,
     content:
-      "The AI automation solution reduced our customer response time by 80% while handling 3x more inquiries. Our team now focuses on complex cases, improving overall satisfaction.",
+      '"The AI automation solution reduced our customer response time by 80% while handling 3x more inquiries. Our team now focuses on complex cases, improving overall satisfaction."',
     author: "Sarah Johnson",
     role: "Customer Service Manager",
     company: "TechCorp Inc.",
@@ -26,7 +26,8 @@ const testimonials = [
   {
     id: 2,
     content:
-      "We've cut operational costs by 45% since implementing the AI workflow automation. What used to take our team days now happens automatically in minutes.",
+      '"We have cut operational costs by 45% since implementing the AI workflow automation. What used to take our' +
+      ' team days now happens automatically in minutes."',
     author: "Michael Chen",
     role: "Operations Director",
     company: "Logistics Plus",
@@ -35,7 +36,8 @@ const testimonials = [
   {
     id: 3,
     content:
-      "The custom AI solution transformed our data processing. We're now extracting actionable insights that directly impact our bottom line within hours instead of weeks.",
+      '"The custom AI solution transformed our data processing. We are now extracting actionable insights that' +
+      ' directly impact our bottom line within hours instead of weeks."',
     author: "Alicia Rodriguez",
     role: "Data Analytics Lead",
     company: "FinancePro",
@@ -44,7 +46,8 @@ const testimonials = [
   {
     id: 4,
     content:
-      "Their AI-powered document processing system eliminated countless hours of manual data entry. We've seen a 70% reduction in processing times and virtually eliminated errors.",
+      '"Their AI-powered document processing system eliminated countless hours of manual data entry. We have seen a' +
+      ' 70% reduction in processing times and virtually eliminated errors."',
     author: "David Williams",
     role: "CTO",
     company: "DocuSign Pro",
@@ -53,7 +56,7 @@ const testimonials = [
   {
     id: 5,
     content:
-      "The customer service chatbot they implemented handles 85% of our routine inquiries, allowing our team to focus on strategic initiatives. Customer satisfaction improved by 40%.",
+      '"The customer service chatbot they implemented handles 85% of our routine inquiries, allowing our team to focus on strategic initiatives. Customer satisfaction improved by 40%."',
     author: "Jennifer Lee",
     role: "Customer Experience Director",
     company: "RetailOne",
@@ -62,12 +65,11 @@ const testimonials = [
 ];
 
 export default function TestimonialsSection() {
-  const { companyName } = useCompanyName();
   const [isPaused, setIsPaused] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [api, setApi] = useState<any>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  
+
   // Set up intersection observer for section entrance animation
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
@@ -92,20 +94,20 @@ export default function TestimonialsSection() {
       }
     };
   }, []);
-  
+
   // Auto-scroll functionality
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (!isPaused && api) {
       interval = setInterval(() => {
         api.scrollNext();
-      }, 5000);
+      }, 3000);
     }
-    
+
     return () => clearInterval(interval);
   }, [isPaused, api]);
-  
+
   // Handle carousel selection change
   useEffect(() => {
     if (!api) {
@@ -123,7 +125,7 @@ export default function TestimonialsSection() {
       api?.off("select", onSelect);
     };
   }, [api]);
-  
+
   // Handle manual dot navigation
   const scrollToIndex = (index: number) => {
     if (api) {
@@ -133,8 +135,8 @@ export default function TestimonialsSection() {
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
@@ -145,24 +147,24 @@ export default function TestimonialsSection() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.4 }
     }
   };
 
   return (
-    <motion.section 
+    <motion.section
       ref={sectionRef}
-      id="testimonials" 
+      id="testimonials"
       className="py-20 px-4"
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
       variants={sectionVariants}
     >
       <div className="container mx-auto max-w-6xl">
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           variants={itemVariants}
         >
@@ -174,13 +176,13 @@ export default function TestimonialsSection() {
           </p>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="relative"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           variants={itemVariants}
         >
-          <Carousel 
+          <Carousel
             setApi={setApi}
             opts={{
               align: "start",
@@ -225,7 +227,7 @@ export default function TestimonialsSection() {
             <CarouselPrevious className="hidden sm:flex -left-4" />
             <CarouselNext className="hidden sm:flex -right-4" />
           </Carousel>
-          
+
           {/* Navigation dots */}
           <div className="flex justify-center mt-6 space-x-2">
             {testimonials.map((_, index) => (

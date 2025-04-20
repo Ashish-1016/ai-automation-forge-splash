@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, MapPin, ArrowRight } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { useCompanyName } from "@/hooks/useCompanyName";
 import AnimatedSectionEntrance from "@/components/AnimatedSectionEntrance";
+import toast from "react-hot-toast";
+import emailjs from '@emailjs/browser';
+import { BackgroundGradient } from "@/components/ui/background-gradient.tsx";
 
 const contactDetails = [
   {
@@ -25,7 +27,6 @@ const contactDetails = [
 ];
 
 export default function ContactSection() {
-  const { toast } = useToast();
   const { companyName } = useCompanyName();
   const [formData, setFormData] = useState({
     name: "",
@@ -49,10 +50,7 @@ export default function ContactSection() {
     // Simulate form submission
     setTimeout(() => {
       setLoading(false);
-      toast({
-        title: "Message Sent!",
-        description: "We'll get back to you as soon as possible.",
-      });
+      toast.success("Message Sent!. We'll get back to you as soon as possible.");
       setFormData({
         name: "",
         email: "",
@@ -60,11 +58,15 @@ export default function ContactSection() {
         message: "",
       });
     }, 1500);
+
+
   };
 
   return (
     <section id="contact" className="py-20 px-4">
+
       <AnimatedSectionEntrance>
+
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -113,83 +115,85 @@ export default function ContactSection() {
               </div>
             </AnimatedSectionEntrance>
 
-            <AnimatedSectionEntrance animation="fade" delay={0.3} className="lg:col-span-3">
-              <Card className="overflow-hidden">
-                <CardContent className="p-6">
-                  <h3 className="text-2xl font-bold mb-6">Send a Message</h3>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label htmlFor="name" className="block font-medium">
-                          Name
-                        </label>
-                        <Input
-                          id="name"
-                          name="name"
-                          placeholder="Your name"
-                          required
-                          value={formData.name}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label htmlFor="email" className="block font-medium">
-                          Email
-                        </label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          placeholder="your@email.com"
-                          required
-                          value={formData.email}
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="company" className="block font-medium">
-                        Company
-                      </label>
-                      <Input
-                        id="company"
-                        name="company"
-                        placeholder="Your company name"
-                        value={formData.company}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="message" className="block font-medium">
-                        Message
-                      </label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        placeholder="How can we help you?"
-                        rows={5}
-                        required
-                        value={formData.message}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="w-full py-6 bg-primary hover:bg-primary/90 text-white"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        "Sending..."
-                      ) : (
-                        <>
-                          Send Message <ArrowRight className="ml-2 h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </AnimatedSectionEntrance>
+              <AnimatedSectionEntrance animation="fade" delay={0.3} className="lg:col-span-3 rounded-2xl">
+                <BackgroundGradient className='p-1'>
+                  <Card className="overflow-hidden w-full rounded-lg">
+                    <CardContent className="p-6 rounded-3xl">
+                      <h3 className="text-2xl font-bold mb-6">Send your Query</h3>
+                      <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label htmlFor="name" className="block font-medium">
+                              Name
+                            </label>
+                            <Input
+                              id="name"
+                              name="name"
+                              placeholder="Your name"
+                              required
+                              value={formData.name}
+                              onChange={handleChange}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label htmlFor="email" className="block font-medium">
+                              Email
+                            </label>
+                            <Input
+                              id="email"
+                              name="email"
+                              type="email"
+                              placeholder="your@email.com"
+                              required
+                              value={formData.email}
+                              onChange={handleChange}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="company" className="block font-medium">
+                            Company
+                          </label>
+                          <Input
+                            id="company"
+                            name="company"
+                            placeholder="Your company name"
+                            value={formData.company}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="message" className="block font-medium">
+                            Message
+                          </label>
+                          <Textarea
+                            id="message"
+                            name="message"
+                            placeholder="How can we help you?"
+                            rows={5}
+                            required
+                            value={formData.message}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <Button
+                          type="submit"
+                          className="w-full py-6 bg-primary hover:bg-primary/90 text-white"
+                          disabled={loading}
+                        >
+                          {loading ? (
+                            "Sending..."
+                          ) : (
+                            <>
+                              Send Message <ArrowRight className="ml-2 h-4 w-4" />
+                            </>
+                          )}
+                        </Button>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </BackgroundGradient>
+              </AnimatedSectionEntrance>
           </div>
         </div>
       </AnimatedSectionEntrance>

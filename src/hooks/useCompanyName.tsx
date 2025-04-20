@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 
 // Default company name
-const DEFAULT_COMPANY_NAME = "My AI Labs";
+export const DEFAULT_COMPANY_NAME = "My AI Labs";
 
 export function useCompanyName() {
   const [companyName, setCompanyName] = useState(DEFAULT_COMPANY_NAME);
